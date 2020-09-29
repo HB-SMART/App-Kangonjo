@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kangonjo/ui/consumir.dart';
+import 'package:kangonjo/ui/dados.dart';
+import 'package:kangonjo/ui/dadoss.dart';
 import 'package:kangonjo/ui/homepage.dart';
 import 'package:kangonjo/ui/inicio.dart';
 import 'package:kangonjo/ui/login.dart';
@@ -15,20 +18,8 @@ class meuapp extends StatelessWidget {
     return MaterialApp(
 
       title: "Kangonjo",
-      home: Home()
+      home: Login()
     );
   }
 }
 
-
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    return Notas();
-  }
-}

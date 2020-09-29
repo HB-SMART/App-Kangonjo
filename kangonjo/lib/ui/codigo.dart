@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:kangonjo/ui/codigo.dart';
 import 'package:kangonjo/ui/homepage.dart';
-class Login extends StatefulWidget {
+class Codigo extends StatefulWidget {
+  Codigo({this.nome});
+  final String nome;
+
   @override
-  _LoginState createState() => _LoginState();
+  _CodigoState createState() => _CodigoState();
 }
 
-class _LoginState extends State<Login> {
-  TextEditingController controllerTelefone = TextEditingController();
+class _CodigoState extends State<Codigo> {
+  TextEditingController controllerCodigo = TextEditingController();
 
-  var _sms="Insira seu número de telefone:";
+
+  var _sms="Insira seu código de estudante iska:";
+
+  get nome => null;
   @override
   Future<List> _getUsers() async {
 
@@ -25,32 +30,33 @@ class _LoginState extends State<Login> {
 
     print(novo[0]['codigoAluno']);
     int codigo=200230;
-    for(var i=0; i<novo.length; i++) {
-      // print(novo[i]['nome']);
+    for(var i=0; i<novo.length; i++){
 
-      var dada = novo[i]['telefone'];
-      if (controllerTelefone.text.isEmpty) {
-        setState(() {
-          _sms = "Insira algo,Porfavor";
-        });
-      } else {
-        if (int.parse(controllerTelefone.text) == int.parse(dada)) {
-          print("Welcome Master - ${novo[i]['nome']}");
+     // print(novo[i]['nome']);
 
-          var nome= novo[i]['nome'];
-          Navigator.of(context).push(
-              new MaterialPageRoute(
-                  builder: (BuildContext context) => Codigo(nome: nome,))
-          );
+var dada=novo[i]['codigoAluno'];
+    if(int.parse(controllerCodigo.text)==int.parse(dada)) {
 
-          break;
-        } else {
-          print("Camarada, vai estudar...");
-          setState(() {
-            _sms = "Número de Telefone Invalido";
-          });
-        }
-      }
+      print("Welcome Master - ${novo[i]['nome']}");
+      var nome= novo[i]['nome'];
+      var curso= novo[i]['curso'];
+      var codigo= novo[i]['codigoAluno'];
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => Homepage(nome: nome,curso: curso,codigo: codigo,)),
+              (Route<dynamic> route) => false
+      );
+      break;
+    }else {
+
+      print("Camarada, vai estudar...");
+      setState(() {
+           _sms="Código Invalido!";
+
+      });
+    }
+
     }
     }
 
@@ -83,7 +89,7 @@ class _LoginState extends State<Login> {
 
 
 
-  Text("$_sms", style: TextStyle(color: Colors.white,fontSize: 15),),
+  Text("  ${"Olá! "+widget.nome+", Insira seu Código"}", style: TextStyle(color: Colors.white,fontSize: 15),),
 
 Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -95,18 +101,15 @@ Padding(
 
                   ),
                   child: TextFormField(
-                    keyboardType: TextInputType.phone,
-                    controller: controllerTelefone,
-
+                    keyboardType: TextInputType.number,
+                    controller: controllerCodigo,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left:8.0),
-                          child: Icon(Icons.phone,color: Colors.white,),
+                          child: Icon(Icons.lock_open,color: Colors.white,),
                         ),
-                    labelText: "+244",
-                    labelStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                    hintText: "Telefone",
+                    hintText: "Seu código",
 hintStyle: TextStyle(color: Colors.white),
 
 
@@ -117,7 +120,7 @@ hintStyle: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-
+              FlatButton(onPressed:(){},child: Text("Esqueci o meu código",style: TextStyle(color: Colors.white),)),
 
       Container(
         width: 200,
@@ -127,7 +130,7 @@ hintStyle: TextStyle(color: Colors.white),
               borderRadius: BorderRadius.circular(30)
 
           ),
-          child: FlatButton(onPressed: _getUsers, child: Text("ENTRAR",style: TextStyle(fontSize:17,fontWeight:FontWeight.bold,color: Colors.white),)))
+          child: FlatButton(onPressed: _getUsers, child: Text("LOGIN",style: TextStyle(fontSize:17,fontWeight:FontWeight.bold,color: Colors.white),)))
   ]),
       ),
     );

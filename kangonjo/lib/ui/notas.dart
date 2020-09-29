@@ -1,11 +1,42 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:http/http.dart' as http;
 class Notas extends StatefulWidget {
+  Notas({this.codigo});
+  final String codigo;
   @override
   _NotasState createState() => _NotasState();
 }
 
 class _NotasState extends State<Notas> {
+
+  Future _getNotas() async {
+var id=widget.codigo;
+
+    final response = await http.get("https://iskaluanda.net/app/user/nota/$id");
+
+    var dates=json.decode(response.body);
+
+
+
+        return dates;
+
+
+
+  }
+  Future<List> _getUsers() async {
+
+    final response = await http.get("https://iskaluanda.net/app/users");
+    return json.decode(response.body);
+  }
+
+  @override
+  void initState() {
+    _getNotas();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,45 +64,65 @@ class _NotasState extends State<Notas> {
 
               ),
 
-                 
-                  FlatButton(onPressed: (){},
-                    child: Padding(
-                      padding: const EdgeInsets.only(top:8.0),
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        decoration: BoxDecoration(
-                             color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 7,
-                              blurRadius: 9,
-                              offset: Offset(5, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child:
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
+          SizedBox(
+              height: 20),
+
+                  Text("Minhas notas",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 17)),
+                  FutureBuilder(
+
+                      future: _getNotas(),
+
+                      builder: (context,snapshot) {
+                        if (snapshot.hasData) {
+                          return  SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                            child:(
+                                ListView.builder(  itemCount: snapshot.data.length,
+                                    itemBuilder: (context,index) {
+                                      List list = snapshot.data;
+                                      return Card(
+                                        elevation:5,
+                                        margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
+                                        child: ListTile(  title: Text( list[index]["subject"],style: TextStyle(color:Color(0xFF043E5B),fontWeight: FontWeight.bold,fontSize: 18),),
+                                            subtitle: Text("Nota: "+list[index]["marks"],style: TextStyle(color:Color(0xFF043E5B),fontWeight: FontWeight.bold,fontSize: 15),)),
+                                      );
+
+
+
+                                    } )),
+
+                          );
+
+
+
+
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.all(38.0),
                             child: Column(
                               children: [
-                                Text("QUIMICA",textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF043E5B,)),),
-                                Text("Nota",style: TextStyle( color: Color(0xFF043E5B)),)
+                                SizedBox(height: 100,),
+                                Center(
+
+                                    child: CircularProgressIndicator(backgroundColor: Color(0xFF043E5B),)),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Carregando...",style: TextStyle(color:Color(0xFF043E5B),fontWeight: FontWeight.bold,fontSize: 18),),
+                                )
                               ],
                             ),
-                          ),
+                          );
+                        }
+
+                      }),
 
 
-                        ),
-                    ),
-                  ),
-
-
-
-
-                              ]
+   ]
                   )
 
     ))

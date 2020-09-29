@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:kangonjo/ui/notas.dart';
+
+import 'login.dart';
 
 class Homepage extends StatefulWidget {
+  Homepage({this.nome, this.curso,this.codigo});
+  final String nome;
+  final String curso;
+  final String codigo;
   @override
   _HomepageState createState() => _HomepageState();
 }
@@ -25,7 +32,7 @@ class _HomepageState extends State<Homepage> {
                   children: [Image.asset("assets/logo.png", width: 100,),
                   Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: Text("José Eduardo \n Engenharia Informática", style: TextStyle(color: Colors.white,fontSize: 15.0),),
+                    child: Text("${widget.nome} \n ${widget.curso}\n Nº: ${widget.codigo}", style: TextStyle(color: Colors.white,fontSize: 15.0),),
                   ),],
                 ),
               ),
@@ -35,7 +42,11 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0xFFDFE5E8),
                   child: FlatButton(
                     child: Text('MINHAS NOTAS'),
-                    onPressed: () {},
+                    onPressed: () { Navigator.of(context).push(
+                        new MaterialPageRoute(
+                            builder: (BuildContext context)=>Notas(codigo: widget.codigo,)
+                        )
+                    );},
 
                   ),
                 ),
@@ -56,7 +67,9 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0xFFDFE5E8),
                   child: FlatButton(
                     child: Text('LOGOUT'),
-                    onPressed: () {},
+                    onPressed: () {
+                      _showMyDialog();
+                      },
 
                   ),
                 ),
@@ -109,7 +122,13 @@ class _HomepageState extends State<Homepage> {
 
                           child:
 
-                        FlatButton(onPressed: (){},
+                        FlatButton(onPressed: (){
+                          Navigator.of(context).push(
+                              new MaterialPageRoute(
+                                  builder: (BuildContext context)=>Notas(codigo: widget.codigo)
+                              )
+                          );
+                        },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -122,7 +141,7 @@ class _HomepageState extends State<Homepage> {
                         )),
                       ),
 
-                      Padding(
+                 /*     Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                             decoration: BoxDecoration(
@@ -139,7 +158,11 @@ class _HomepageState extends State<Homepage> {
 
                             child:
 
-                            FlatButton(onPressed: (){},
+                            FlatButton(onPressed: (){ Navigator.of(context).push(
+                                new MaterialPageRoute(
+                                    builder: (BuildContext context)=>Notas()
+                                )
+                            );},
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -151,9 +174,10 @@ class _HomepageState extends State<Homepage> {
                               ),
                             )),
                       ),
+                      */
+
                     ],
                   )
-
 
 
 
@@ -180,4 +204,47 @@ class _HomepageState extends State<Homepage> {
 
         );
   }
-}
+
+
+    Future<void> _showMyDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Saindo...'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+              
+                  Text('Tem certeza que deseja sair?'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('Sim'),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) => Login()),
+                    ModalRoute.withName('/'),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+  }
+
+
+
